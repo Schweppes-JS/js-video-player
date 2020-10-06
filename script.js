@@ -1,3 +1,4 @@
+const player = document.querySelector('.player')
 const video = document.querySelector('video');
 const progressRange = document.querySelector('.progress-range');
 const progressBar = document.querySelector('.progress-bar');
@@ -8,7 +9,7 @@ const volumeBar = document.querySelector('.volume-bar');
 const currentTime = document.querySelector('.time-elapsed');
 const duration = document.querySelector('.time-duration');
 const speed = document.querySelector('.player-speed');
-const fullscreenBtn = document.querySelector('.fullscreem');
+const fullscreenBtn = document.querySelector('.fullscreen');
 
 // Play & Pause ------------------------------------------------- //
 function showPlayIcon() {
@@ -101,14 +102,53 @@ function changeSpeed() {
     video.playbackRate = speed.value;
 }
 
+
+// Fullscreen ---------------------------------------------------------------- //
+
+// View in fullscreen 
+function openFullscreen(elem) {
+    if (elem.requestFullscreen) {
+        elem.requestFullscreen();
+    } else if (elem.mozRequestFullScreen) { /* Firefox */
+        elem.mozRequestFullScreen();
+    } else if (elem.webkitRequestFullscreen) { /* Chrome, Safari and Opera */
+        elem.webkitRequestFullscreen();
+    } else if (elem.msRequestFullscreen) { /* IE/Edge */
+        elem.msRequestFullscreen();
+    }
+    video.classList.add('video-fullscreen');
+}
+
+// Close fullscreen 
+function closeFullscreen() {
+    if (document.exitFullscreen) {
+        document.exitFullscreen();
+    } else if (document.mozCancelFullScreen) { /* Firefox */
+        document.mozCancelFullScreen();
+    } else if (document.webkitExitFullscreen) { /* Chrome, Safari and Opera */
+        document.webkitExitFullscreen();
+    } else if (document.msExitFullscreen) { /* IE/Edge */
+        document.msExitFullscreen();
+    }
+    video.classList.remove('video-fullscreen');
+}
+
+let fullscreen = false;
+
+// Toggle fullscreen
+function toggleFullscreen() {
+    !fullscreen ? openFullscreen(player) : closeFullscreen();
+    fullscreen = !fullscreen;
+}
+
 // Event listeners
 playBtn.addEventListener('click', togglePlay);
 video.addEventListener('click', togglePlay);
 video.addEventListener('timeupdate', updateProgress);
 video.addEventListener('canplay', updateProgress);
+video.addEventListener('ended', showPlayIcon); // On video end, show play button icon
 progressRange.addEventListener('click', setProgress);
 volumeRange.addEventListener('click', changeVolume);
 volumeIcon.addEventListener('click', toggleMute);
 speed.addEventListener('change', changeSpeed);
-// On video end, show play button icon
-video.addEventListener('ended', showPlayIcon);
+fullscreenBtn.addEventListener('click', toggleFullscreen);
